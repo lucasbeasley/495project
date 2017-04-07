@@ -2,6 +2,7 @@
 #Purpose: Client file for project 2 with RSA implemented
 
 import socket
+import time
 from Crypto.PublicKey import RSA
 
 #create a socket for the client
@@ -22,8 +23,12 @@ client_socket.send(publick)
 serverkey = client_socket.recv(2048)
 pubskey = RSA.importKey(serverkey)
 
-#send message to server
-sentstr = "Network Security"
-estr = pubskey.encrypt(sentstr, 'x')[0]
-client_socket.send(estr)
+
+
+#send words to server
+inputfile = open('10000words.txt', 'r')
+for word in inputfile.readlines():
+    estr = pubskey.encrypt(word.rstrip(), 32)[0]
+    client_socket.send(estr)
+    print client_socket.recv(2048)
 

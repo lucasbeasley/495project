@@ -2,6 +2,8 @@
 #Purpose: Server file for project 2 with RSA implemented
 
 import socket
+import time
+import ast
 from Crypto.PublicKey import RSA
 
 #create a socket for the server
@@ -25,8 +27,6 @@ privatek = skey.exportKey('DER')
 privk = RSA.importKey(privatek)
 
 
-
-
 while 1:
     try:
         #accept clients
@@ -40,9 +40,11 @@ while 1:
         client.send(publick)
 
         #receive and decrypt message from client
-        recstr = client.recv(2048)
-        dstr = privk.decrypt(recstr)
-        print dstr
+        while 1:
+            recstr = client.recv(2048)
+            dstr = privk.decrypt(str(recstr))
+            print str(dstr)
+            client.send("Message received")
 
     except Exception as error:
         print error
