@@ -4,6 +4,7 @@
 import socket
 import time
 from Crypto.PublicKey import RSA
+from Crypto.Hash import MD5
 
 #create a socket for the client
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,9 +24,9 @@ client_socket.send(publick)
 serverkey = client_socket.recv(2048)
 pubskey = RSA.importKey(serverkey)
 
-#send string to server
-stri = "Network Security"
-estr = pubskey.encrypt(stri, 32)[0]
+#hash message to send to server and send
+stri = MD5.new('Network Security')
+estr = pubskey.encrypt(stri.hexdigest(), 32)[0]
 client_socket.send(estr)
 client_socket.recv(2048)
 

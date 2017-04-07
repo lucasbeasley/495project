@@ -38,7 +38,7 @@ while 1:
         #send public key to client
         client.send(publick)
 
-        #receive string from client
+        #receive message from client
         stri = client.recv(2048)
         dstr = privk.decrypt(str(stri))
         print dstr
