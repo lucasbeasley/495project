@@ -2,7 +2,6 @@
 #Purpose: Server file for project 2 with RSA implemented
 
 import socket
-import Crypto
 from Crypto.PublicKey import RSA
 
 #create a socket for the server
