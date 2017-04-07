@@ -23,12 +23,28 @@ client_socket.send(publick)
 serverkey = client_socket.recv(2048)
 pubskey = RSA.importKey(serverkey)
 
+#send string to server
+stri = "Network Security"
+estr = pubskey.encrypt(stri, 32)[0]
+client_socket.send(estr)
+client_socket.recv(2048)
 
+#set timing
+timing = 0
 
 #send words to server
 inputfile = open('10000words.txt', 'r')
 for word in inputfile.readlines():
+    #start timing
+    start = time.time()
+
+    #encrypt and receive final time
     estr = pubskey.encrypt(word.rstrip(), 32)[0]
     client_socket.send(estr)
-    print client_socket.recv(2048)
+    end = client_socket.recv(2048)
 
+    #calculate total time taken to encrypt/decrypt
+    timing = timing + (float(end) - start)
+
+#report final timing
+print("Total time taken in seconds: " + timing)

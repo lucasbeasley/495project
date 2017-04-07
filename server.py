@@ -3,6 +3,7 @@
 
 import socket
 import diffiehellman
+import time
 import pyDes
 
 #create a socket for the server
@@ -57,6 +58,15 @@ while 1:
         #print received string
         print dstr
 
+        # receive and decrypt message from client
+        while 1:
+            recstr = client.recv(2048)
+            dstr = des.decrypt(str(recstr))
+            print str(dstr)
+
+            # get final time after decryption and pass to client
+            end = time.time()
+            client.send(str(end))
 
     except Exception as error:
         print error

@@ -3,7 +3,6 @@
 
 import socket
 import time
-import ast
 from Crypto.PublicKey import RSA
 
 #create a socket for the server
@@ -39,12 +38,21 @@ while 1:
         #send public key to client
         client.send(publick)
 
+        #receive string from client
+        stri = client.recv(2048)
+        dstr = privk.decrypt(str(stri))
+        print dstr
+        client.send("Message received")
+
         #receive and decrypt message from client
         while 1:
             recstr = client.recv(2048)
             dstr = privk.decrypt(str(recstr))
             print str(dstr)
-            client.send("Message received")
+
+            #get final time after decryption and pass to client
+            end = time.time()
+            client.send(str(end))
 
     except Exception as error:
         print error

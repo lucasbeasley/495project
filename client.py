@@ -3,6 +3,7 @@
 
 import socket
 import diffiehellman
+import time
 import pyDes
 
 #create a socket for the client
@@ -38,4 +39,22 @@ des = pyDes.des(str(deskey)[:8], padmode= pyDes.PAD_PKCS5)
 estr = des.encrypt("Network Security")
 client_socket.send(estr)
 
+#set timing
+timing = 0
 
+#send words to server
+inputfile = open('10000words.txt', 'r')
+for word in inputfile.readlines():
+    #start timing
+    start = time.time()
+
+    #encrypt and receive final time
+    estr = des.encrypt(word.rstrip())
+    client_socket.send(estr)
+    end = client_socket.recv(2048)
+
+    #calculate total time taken to encrypt/decrypt
+    timing = timing + (float(end) - start)
+
+#report final timing
+print("Total time taken in seconds: " + timing)
