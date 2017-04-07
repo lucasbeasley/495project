@@ -3,6 +3,7 @@
 
 import socket
 import diffiehellman
+import pyDes
 
 #create a socket for the client
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,7 +18,7 @@ prime = diffiehellman.getP()
 crand = diffiehellman.getRando()
 
 #client secret = g^r mod p
-csec = pow(base, prime, crand)
+csec = pow(base, crand, prime)
 
 #send base, prime, and csec to server
 sentstr = str(base) + " " + str(prime) + " " + str(csec)
@@ -27,6 +28,14 @@ client_socket.send(sentstr)
 serverstr = client_socket.recv(2048)
 
 #compute server's secret
-ssec = pow(long(serverstr), crand, prime)
+ssec = pow(long(serverstr), long(crand), long(prime))
 
-print ssec
+#send string using DES
+binstr = "{0:b}".format(ssec)
+binstr = binstr[:64]
+deskey = int(binstr, 2)
+des = pyDes.des(str(deskey)[:8], padmode= pyDes.PAD_PKCS5)
+estr = des.encrypt("Network Security")
+client_socket.send(estr)
+
+

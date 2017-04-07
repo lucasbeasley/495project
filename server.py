@@ -3,6 +3,7 @@
 
 import socket
 import diffiehellman
+import pyDes
 
 #create a socket for the server
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,7 +26,7 @@ while 1:
         client, address = server_socket.accept()
 
         #receive string
-        clientstr = client.recv(1024)
+        clientstr = client.recv(2048)
 
         #unpackage string
         arr = clientstr.split(" ")
@@ -43,9 +44,19 @@ while 1:
         client.send(str(ssec))
 
         #compute client's secret
-        csec = pow(long(csec), srand, long(prime))
+        csec = pow(long(csec), long(srand), long(prime))
 
-        print csec
+        #receive string using DES
+        binstr = "{0:b}".format(csec)
+        binstr = binstr[:64]
+        deskey = int(binstr, 2)
+        des = pyDes.des(str(deskey)[:8], padmode=pyDes.PAD_PKCS5)
+        clientstr = client.recv(2048)
+        dstr = des.decrypt(clientstr)
+
+        #print received string
+        print dstr
+
 
     except Exception as error:
         print error
