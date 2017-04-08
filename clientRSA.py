@@ -48,4 +48,4 @@ for word in inputfile.readlines():
     timing = timing + (float(end) - start)
 
 #report final timing
-print("Total time taken in seconds: " + timing)
+print("Total time taken in seconds: " + str(timing))
